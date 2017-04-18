@@ -58,6 +58,16 @@
 		    .attr("width", width)
 		    .attr("height", height);
 
+		svg.call(d3.zoom()
+		.scaleExtent([1/2, 16])
+		.on("zoom", zoomed));
+
+		function zoomed() { g.attr("transform", d3.event.transform); }
+
+		function dragged(d) { d3.select(this).attr("cx", d.x = d3.event.x).attr("cy", d.y = d3.event.y); }
+
+		var g = svg.append("g");
+
 		var rawData
 
 		d3.json("data/usroads.json", function(error, usroads) {
@@ -66,7 +76,7 @@
 			// console.log(topojson.feature(usroads, usroads.objects.roads).features);
 
 			//boundary
-	  	svg.append("g")
+	  	var usa = g.append("g")
 			.selectAll("path")
 		  .data(topojson.feature(usroads, usroads.objects.usa).features)
 			.enter().append("path")
@@ -75,7 +85,7 @@
 			.style("stroke","#252525")
 		  .style("stroke-width",1);
 
-	  	svg.append("g")
+	  	var roads = g.append("g")
 			.selectAll("path")
 		 	.data(topojson.feature(usroads, usroads.objects.roads).features)
 			.enter().append("path")
@@ -108,7 +118,7 @@
 				citiesLocation.push({"city": d.city.toLowerCase(), "location": [d.lng,d.lat], "province": d.province});
 			});
 
-			var circles = svg.selectAll("circle").data(citiesLocation).enter()
+			var circles = g.append("g").selectAll("circle").data(citiesLocation).enter()
 			.append("circle")
 			.attr("cx", function (d) { return projection(d.location)[0]; })
 			.attr("cy", function (d) { return projection(d.location)[1]; })
