@@ -134,25 +134,18 @@
 
 					}
 					nodes.push({start:temp[0], end:temp[temp.length-1], distance: dist})
-					// console.log(dij)
 				}
 			}
 		})
-		console.log(nodes)
-
+		// console.log(nodes)
 		var nodesArray = [];
-		var count = 0;
-		var temp = nodes[0].start;
-		for (i=0; i<nodes.length-1; i++){
-			if (!(nodes[i].start[0]==temp[0] && nodes[i].start[1]==temp[1])){
-				nodesArray.push({name:count, coordinates:nodes[i].start})
-				count++
-				temp = nodes[i+1].start
-			}
-		}
+		nodes.forEach(function(d){
+			nodesArray.push(d.start)
+			nodesArray.push(d.end)
+		})
 		console.log(nodesArray)
 
-
+		
 
 		var circles = g.append("g").selectAll("circle").data(startN);
 		circles.exit().remove();
