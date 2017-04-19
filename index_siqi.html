@@ -44,73 +44,60 @@
 
 
 	<script>
-		var width = 960,
-	    	height = 600;
-
-		var projection = d3.geoAlbersUsa()
-		    .scale(1100)
-		    .translate([width / 2, height / 2]);
-
-		var path = d3.geoPath()
-		    .projection(projection);
-
+		var width = 960,height = 600;
 		var svg = d3.select("#plot").append("svg")
-		    .attr("width", width)
-		    .attr("height", height);
+		    .attr("width", width).attr("height", height);
 
-		svg.call(d3.zoom()
-		.scaleExtent([1/2, 16])
-		.on("zoom", zoomed));
+		var projection = d3.geoAlbersUsa().scale(1100).translate([width / 2, height / 2]);
+		var path = d3.geoPath().projection(projection);
 
+		svg.call(d3.zoom().scaleExtent([1/2, 16]).on("zoom", zoomed));
 		function zoomed() { g.attr("transform", d3.event.transform); }
-
 		function dragged(d) { d3.select(this).attr("cx", d.x = d3.event.x).attr("cy", d.y = d3.event.y); }
-
 		var g = svg.append("g");
 
 		var rawData
+		var usroads
+		var citiesData, citiesLocation = [];
+		var startPoint, destinationPoint;
+		var pinImg, arrowImg;
 
-		d3.json("data/usroads.json", function(error, usroads) {
-			if (error) throw error;
-
-			// console.log(topojson.feature(usroads, usroads.objects.roads).features);
-
-			//boundary
-	  	var usa = g.selectAll("path")
-		  .data(topojson.feature(usroads, usroads.objects.usa).features)
-			.enter().append("path")
-		  .attr("d", path)
-		 	.style("fill","none")
-			.style("stroke","#252525")
-		  .style("stroke-width",1);
-
-	  	var roads = g.selectAll("path")
-		 	.data(topojson.feature(usroads, usroads.objects.roads).features)
-			.enter().append("path")
-      .attr("d", path)
-		  .attr("class",function(d) { return "roads " + d.properties.type.toLowerCase().split(' ').join('-'); });
-
-			showCities();
-			console.log("showCities");
-		});
-
-		var citiesData;
-		var citiesLocation = [];
-		var startPoint;
-		var destinationPoint;
-		var pinImg;
-		var arrowImg;
 		function parseCities (line) {
 			line.lng = Number(line.lng);
 			line.lat = Number(line.lat);
 			return line;
 		}
-		d3.csv("data/uscities.csv", parseCities,function(error, data) {
-			citiesData = data;
-		});
+
+		d3.queue()
+			.defer(d3.json,"data/usroads.json")
+			.defer(d3.csv, "data/uscities.csv", parseCities)
+			.defer(d3.csv, "data/airports.csv")
+			.await(function(error, rawRoads, rawCities, rawAirports){
+				if (error) throw error;
+				usroads = rawRoads;
+				citiesData = rawCities;
+				airports = rawAirports;
+				showMap()
+				showCities()
+			});
+
+		function showMap(){
+			var usa = g.selectAll("path")
+			  	.data(topojson.feature(usroads, usroads.objects.usa).features)
+				.enter().append("path")
+			  	.attr("d", path)
+			 	.style("fill","none")
+				.style("stroke","#252525")
+			  	.style("stroke-width",1);
+
+		  	var roads = g.selectAll("path")
+			 	.data(topojson.feature(usroads, usroads.objects.roads).features)
+				.enter().append("path")
+	      		.attr("d", path)
+			  	.attr("class",function(d) { return "roads " + d.properties.type.toLowerCase().split(' ').join('-'); });
+		}
 
 		function showCities(){
-
 			citiesData.forEach(function(d) {
 				citiesLocation.push({"city": d.city.toLowerCase(), "location": [d.lng,d.lat], "province": d.province});
 			});
@@ -145,11 +132,7 @@
 			.attr('height', '20')
 		  .attr('width', '20')
 			.attr('opacity','0');
-
 		}
-
-
-
 
 	</script>
 
@@ -174,8 +157,6 @@
 
 			drawCities(start,destination);
 		}
-
-
 
 		function drawCities(start,destination){
 			if(start == -1 || destination == -1){
