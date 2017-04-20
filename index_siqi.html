@@ -37,6 +37,10 @@
 			<input name="Destination" type="text" id="destination" placeholder="Destination&hellip;">
 			<button id="search">Find Cities!</button>
 		</div>
+		<div id="changeButtons">
+			<button id="driveButton">Drive</button>
+			<button id="flightButton">Flight</button>
+		</div>
 		<div id="plot">
 			<circle id="startPoint" />
 		</div>
@@ -140,9 +144,11 @@
 
 	<script>
 		// init();
-		d3.select("#search").on("click", work);
+		d3.select("#search").on("click", focusCities);
+		d3.select("#driveButton").on("click", showDrive);
+		d3.select("#flightButton").on("click", showFight);
 
-		function work(){
+		function focusCities(){
 			var string_start = d3.select("#start").property("value").toLowerCase();
 			var string_destination = d3.select("#destination").property("value").toLowerCase();
 			var start = -1;
@@ -193,6 +199,27 @@
 			.attr("cy", function (d) { return projection(citiesLocation[destination].location)[1]; })
 			.attr("r", 5)
 			.style("fill","red");
+		}
+
+		function showDrive(){
+			svg.append("circle")
+			.attr("cx",1)
+			.attr("cy",1)
+			.attr("r",10)
+			.style("fill","red");
+		}
+
+		function showFight(){
+			var popup = svg.append(g).attr("id","popup");
+
+
+			d3.select("#popup")
+			.append("rect")
+			.attr("x",30)
+			.attr("y",30)
+			.attr("height",10)
+			.attr("width",10)
+			.style("fill",white);
 		}
 	</script>
 

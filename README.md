@@ -8,3 +8,6 @@ The project will realize an interactive visualization of road navigation system.
 
 prominent cities' data(part of)
 http://simplemaps.com/data/world-cities#terms
+
+Please download the dataset of flights from drive, and put it under the "data" file
+https://drive.google.com/open?id=0Bxaj1qKDk7xtSEJYRTlubTM3ZDQ
