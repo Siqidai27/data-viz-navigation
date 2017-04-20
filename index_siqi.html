@@ -92,6 +92,7 @@
 		var startPoint, destinationPoint;
 		var pinImg, arrowImg;
 		var airports, flights;
+		var city_airport = {};
 
 		function parseCities (line) {
 			line.lng = Number(line.lng);
@@ -99,10 +100,15 @@
 			return line;
 		}
 
+		function parseAirports(line){
+			city_airport[line.CITY.toLowerCase()] = []
+			return line;
+		}
+
 		d3.queue()
 			.defer(d3.json,"data/usroads.json")
 			.defer(d3.csv, "data/uscities.csv", parseCities)
-			.defer(d3.csv, "data/airports.csv")
+			.defer(d3.csv, "data/airports.csv", parseAirports)
 			.defer(d3.csv, "data/flights1.csv")
 			.await(function(error, rawRoads, rawCities, rawAirports, rawFlights){
 				if (error) throw error;
@@ -110,9 +116,19 @@
 				citiesData = rawCities;
 				airports = rawAirports;
 				flights = rawFlights;
+
+				airports.forEach(function (d){
+
+					city_airport[d.CITY.toLowerCase()].push(d.AIRPORT);
+				});
+				console.log(city_airport);
+
+
 				showMap()
 				showCities()
 			});
+
+
 
 		function showMap(){
 			var usa = g.selectAll("path")
