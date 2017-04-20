@@ -93,6 +93,7 @@
 		var pinImg, arrowImg;
 		var airports, flights, airlines;
 		var city_airport = {};
+		var city_location = {};
 		var IATA_city = {};
 		var airlines_lookup = {};
 		var allInfo = {};
@@ -138,7 +139,6 @@
 				airlines = rawAirlines;
 				flights = rawFlights;
 
-
 				airports.forEach(function (d){
 
 					city_airport[d.CITY.toLowerCase()].push(d.AIRPORT);
@@ -182,6 +182,10 @@
 		function showCities(){
 			citiesData.forEach(function(d) {
 				citiesLocation.push({"city": d.city.toLowerCase(), "location": [d.lng,d.lat], "province": d.province});
+			});
+
+			citiesLocation.forEach(function(d){
+				city_location[d.city] = d.location;
 			});
 
 			var tool_tip = d3.tip()
@@ -296,21 +300,28 @@
 		function showFight(){
 
 
-			// var temp_height = 120;
-			// var temp_width = 80;
-			var popup = svg.append("g");
+			var popup_height = 240;
+			var popup_width = 360;
+			var popup = svg.append("g").attr("id","popup");
 			popup.append("rect")
 			.attr("id","tempbg")
 			.attr("x",width/2)
 			.attr("y",height/2)
-			.attr("height",150)
-			.attr("width",270)
+			.attr("height",popup_height)
+			.attr("width",popup_width)
 			.attr("rx",10)
 			.attr("ry",10)
 			.style("fill","#9FDBD1")
 			.style("stroke","white")
 			.style("stroke-width",3)
 			.style("opacity",0.7);
+
+			popup.append('svg:image').attr('xlink:href','images/close.png')
+			.attr('x',-1)
+			.attr('y',-1)
+			.attr('height', '20')
+		  	.attr('width', '20')
+			.attr('opacity','0');
 
 			console.log("showRect!!");
 
