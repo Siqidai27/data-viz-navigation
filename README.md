@@ -11,3 +11,6 @@ http://simplemaps.com/data/world-cities#terms
 
 Please download the dataset of flights from drive, and put it under the "data" file
 https://drive.google.com/open?id=0Bxaj1qKDk7xtSEJYRTlubTM3ZDQ
+
+Flight animation
+http://www.tnoda.com/blog/2014-04-02
