@@ -75,40 +75,9 @@
 		</div>
 
 	<script>
-		var width = 1200, height = 800, padding = 20;
+		var width = 1000, height = 700;
 		var svg = d3.select("#plot").append("svg")
 		    .attr("width", width).attr("height", height);
-	  var svg2 = d3.select("#plot2").append("svg")
-		    .attr("width", width).attr("height", height);
-				var columns = ["Id", "Book  Title", "Author"];
-				var books = [
-		    ["1", "The Caves of Steel", "Isaac Asimov"],
-		    ["2", "The Robots of Dawn", "Isaac Asimov"],
-		    ["3", "Brave New World", "Aldous Huxley"],
-		    ["4", "1984", "George Orwell"],
-				];
-
-				var table = d3.select("body").append("table").attr("id", "bookTable");
-				var thead = table.append("thead");
-				var tbody = table.append("tbody");
-
-				thead.append("tr")
-				  .selectAll("th")
-				  .data(columns)
-				  .enter()
-				  .append("th")
-				  .text(function ( d ) { return d; })
-
-				var rows = tbody.selectAll("tr")
-				    .data(books)
-				    .enter()
-				    .append("tr").attr("data-id", function( d ){  return d[0]; });
-
-				var cells = rows.selectAll("td")
-				    .data(function ( d ) { return d; })
-				    .enter()
-				    .append("td")
-				    .text(function( d ) { return d; });
 
 		var projection = d3.geoAlbersUsa().scale(1100).translate([width / 2, height / 2]);
 		var path = d3.geoPath().projection(projection);
@@ -184,6 +153,8 @@
 			});
 
 		function showMap() {
+			projection.fitExtent([[0, 0], [svg.attr("width"), svg.attr("height")]], topojson.feature(usroads, usroads.objects.usa));
+
 			var usa = g.selectAll("path")
 			  	.data(topojson.feature(usroads, usroads.objects.usa).features)
 				.enter().append("path")
@@ -197,14 +168,6 @@
 				.enter().append("path")
 	      		.attr("d", path)
 			  	.attr("class",function(d) { return "roads " + d.properties.type.toLowerCase().split(' ').join('-'); });
-
-					var columns = ["Id", "Book  Title", "Author"];
-					var books = [
-			    ["1", "The Caves of Steel", "Isaac Asimov"],
-			    ["2", "The Robots of Dawn", "Isaac Asimov"],
-			    ["3", "Brave New World", "Aldous Huxley"],
-			    ["4", "1984", "George Orwell"],
-					];
 		}
 
 		function showCities() {
@@ -303,14 +266,6 @@
 			.attr("r", 5)
 			.style("fill","blue");
 
-			// arrowImg.transition().duration(1000).delay(500)
-			// .attr("x", projection(citiesLocation[start].location)[0])
-			// .attr("y", projection(citiesLocation[start].location)[1])
-		  // .attr('height', '25')
-		  // .attr('width', '25')
-			// .attr("transform", "translate(-13,-25)")
-			// .attr('opacity','1');
-
 			pinImg.transition().duration(1000).delay(500)
 			.attr("x", projection(citiesLocation[destination].location)[0])
 			.attr("y", projection(citiesLocation[destination].location)[1])
@@ -334,48 +289,38 @@
 			.style("fill","red");
 		}
 
-
-		var popup = svg.append("g").attr("id","popup");
-
 		function showFlight(){
-
-			var popup_height = 300;
-			var popup_width = 480;
-
-
-			popup.append("rect")
-			.attr("id","tempbg")
-			.attr("x",width/5)
-			.attr("y",height/5)
-			.attr("height",popup_height)
-			.attr("width",popup_width)
-			.attr("rx",10)
-			.attr("ry",10)
-			.style("fill","#9FDBD1")
-			.style("stroke","white")
-			.style("stroke-width",3)
-			.style("opacity",0.7);
-
-			popup.append('svg:image').attr('xlink:href','images/close.png')
-			.attr('x',width/5+popup_width-30)
-			.attr('y',height/5)
-			.attr('height', '30')
-		  .attr('width', '30')
-			.on("click", popupRemove);
+			svg.selectAll(".dot").remove();
+			d3.selectAll("#popup").remove();
+			// var popup = svg.append("g").attr("id","popup");
+			// var popup_height = 300;
+			// var popup_width = 480;
+			//
+			// popup.append("rect")
+			// .attr("id","tempbg")
+			// .attr("x",width/5)
+			// .attr("y",height/5)
+			// .attr("height",popup_height)
+			// .attr("width",popup_width)
+			// .attr("rx",10)
+			// .attr("ry",10)
+			// .style("fill","#9FDBD1")
+			// .style("stroke","white")
+			// .style("stroke-width",3)
+			// .style("opacity",0.7);
+			//
+			// popup.append('svg:image').attr('xlink:href','images/close.png')
+			// .attr('x',width/5+popup_width-30)
+			// .attr('y',height/5)
+			// .attr('height', '30')
+			//  	.attr('width', '30')
+			// .on("click", popupRemove);
 
 			findFlight(string_start,string_destination);
-
-			console.log("showRect!!");
-
 			showPlane(startP, destP);
 		}
 
-
-		function popupRemove(){
-			d3.select("#popup").remove();
-		}
-
-		function showFlightRoute(orig, dest) {
+		function popupRemove(){ d3.selectAll("#popup").remove();}
 
 		function showDest(orig, dest) {
 			var dot = g.append("circle")
@@ -390,7 +335,8 @@
 
 			var plane = g.append("path")
             	.attr("class", "plane")
-                .attr("d", "m25.21488,3.93375c-0.44355,0 -0.84275,0.18332 -1.17933,0.51592c-0.33397,0.33267 -0.61055,0.80884 -0.84275,1.40377c-0.45922,1.18911 -0.74362,2.85964 -0.89755,4.86085c-0.15655,1.99729 -0.18263,4.32223 -0.11741,6.81118c-5.51835,2.26427 -16.7116,6.93857 -17.60916,7.98223c-1.19759,1.38937 -0.81143,2.98095 -0.32874,4.03902l18.39971,-3.74549c0.38616,4.88048 0.94192,9.7138 1.42461,13.50099c-1.80032,0.52703 -5.1609,1.56679 -5.85232,2.21255c-0.95496,0.88711 -0.95496,3.75718 -0.95496,3.75718l7.53,-0.61316c0.17743,1.23545 0.28701,1.95767 0.28701,1.95767l0.01304,0.06557l0.06002,0l0.13829,0l0.0574,0l0.01043,-0.06557c0,0 0.11218,-0.72222 0.28961,-1.95767l7.53164,0.61316c0,0 0,-2.87006 -0.95496,-3.75718c-0.69044,-0.64577 -4.05363,-1.68813 -5.85133,-2.21516c0.48009,-3.77545 1.03061,-8.58921 1.42198,-13.45404l18.18207,3.70115c0.48009,-1.05806 0.86881,-2.64965 -0.32617,-4.03902c-0.88969,-1.03062 -11.81147,-5.60054 -17.39409,-7.89352c0.06524,-2.52287 0.04175,-4.88024 -0.1148,-6.89989l0,-0.00476c-0.15655,-1.99844 -0.44094,-3.6683 -0.90277,-4.8561c-0.22699,-0.59493 -0.50356,-1.07111 -0.83754,-1.40377c-0.33658,-0.3326 -0.73578,-0.51592 -1.18194,-0.51592l0,0l-0.00001,0l0,0z");
+                .attr("d", "m25.21488,3.93375c-0.44355,0 -0.84275,0.18332 -1.17933,0.51592c-0.33397,0.33267 -0.61055,0.80884 -0.84275,1.40377c-0.45922,1.18911 -0.74362,2.85964 -0.89755,4.86085c-0.15655,1.99729 -0.18263,4.32223 -0.11741,6.81118c-5.51835,2.26427 -16.7116,6.93857 -17.60916,7.98223c-1.19759,1.38937 -0.81143,2.98095 -0.32874,4.03902l18.39971,-3.74549c0.38616,4.88048 0.94192,9.7138 1.42461,13.50099c-1.80032,0.52703 -5.1609,1.56679 -5.85232,2.21255c-0.95496,0.88711 -0.95496,3.75718 -0.95496,3.75718l7.53,-0.61316c0.17743,1.23545 0.28701,1.95767 0.28701,1.95767l0.01304,0.06557l0.06002,0l0.13829,0l0.0574,0l0.01043,-0.06557c0,0 0.11218,-0.72222 0.28961,-1.95767l7.53164,0.61316c0,0 0,-2.87006 -0.95496,-3.75718c-0.69044,-0.64577 -4.05363,-1.68813 -5.85133,-2.21516c0.48009,-3.77545 1.03061,-8.58921 1.42198,-13.45404l18.18207,3.70115c0.48009,-1.05806 0.86881,-2.64965 -0.32617,-4.03902c-0.88969,-1.03062 -11.81147,-5.60054 -17.39409,-7.89352c0.06524,-2.52287 0.04175,-4.88024 -0.1148,-6.89989l0,-0.00476c-0.15655,-1.99844 -0.44094,-3.6683 -0.90277,-4.8561c-0.22699,-0.59493 -0.50356,-1.07111 -0.83754,-1.40377c-0.33658,-0.3326 -0.73578,-0.51592 -1.18194,-0.51592l0,0l-0.00001,0l0,0z")
+				.style("fill", "blue");
 
 			var route = g.append("path")
 	            .datum({type: "LineString", coordinates: [orig, dest]})
@@ -418,7 +364,7 @@
 						var r = 90 - Math.atan2(-y, x) * 180 / Math.PI;
 
 						var s = Math.min(Math.sin(Math.PI * t) * 0.7, 0.3);
-						return "translate(" + p.x + "," + p.y + ") scale(" + s * 2 + ") rotate(" + r + ")";
+						return "translate(" + p.x + "," + p.y + ") scale(" + s * 2.5 + ") rotate(" + r + ")";
 					}
 				}
 			}
@@ -426,37 +372,64 @@
 			transition(plane, route);
 		}
 
-		// function findFlight(orig, dest) {
-		// 	var columns = ["FLIGHT", "DEPARTURE","ARIVAL","DISTANCE"];
-		// 	var books = [];
-		// 	var count=0;
-		// 	allInfo[orig].forEach(function(d){
-		// 		if (d.DESTINATION_CITY.toLowerCase() == dest) {
-		// 			count++;
-		// 			books.push([d.FLIGHT_ID,d.SCHEDULED_DEPARTURE,d.SCHEDULED_ARRIVAL,d.DISTANCE]);
-		// 		}
-		// 	})
-		// 	console.log(books);
-		// 	if(count == 0){
-		// 		console.log("No flight from "+orig+" to "+dest+" today!");
-		// 	}
-		// }
+		function findFlight(orig, dest) {
+			var columns = ["FLIGHT", "DEPARTURE","ARIVAL","DISTANCE"];
+			var books = [];
+			var count=0;
+			allInfo[orig].forEach(function(d){
+				if (d.DESTINATION_CITY.toLowerCase() == dest) {
+					count++;
+					books.push([d.FLIGHT_ID,d.SCHEDULED_DEPARTURE,d.SCHEDULED_ARRIVAL,d.DISTANCE]);
+				}
+			})
+			// console.log(books);
+			if(count == 0){
+				console.log("No flight from "+orig+" to "+dest+" today!");
+			}
+
+			var table = d3.select("body").append("table").attr("id", "bookTable");
+			var thead = table.append("thead");
+			var tbody = table.append("tbody");
+
+			thead.append("tr")
+			  	.selectAll("th")
+			  	.data(columns)
+				.enter()
+			  	.append("th")
+			  	.text(function (d) { return d; })
+
+			var rows = tbody.selectAll("tr")
+			    .data(books)
+			    .enter()
+			    .append("tr").attr("data-id", function(d){ return d[0]; });
+
+			var cells = rows.selectAll("td")
+			    .data(function (d) { return d; })
+			    .enter()
+			    .append("td")
+				.text(function (d) { return d; });
+		}
 
 		function flightFrom(orig) {
-			allInfo[orig].forEach(function(d) {
-				// console.log(city_location[orig])
-				if (city_location[d.DESTINATION_CITY.toLowerCase()]){
-					// console.log(d.DESTINATION_CITY.toLowerCase(), city_location[d.DESTINATION_CITY.toLowerCase()])
-					var start = city_location[orig];
-					var end = city_location[d.DESTINATION_CITY.toLowerCase()];
-					// console.log(end)
-					showDest(start, end);
-					showPlane(start, end);
+			if (!allInfo[orig]) {console.log("OOOPS!!! There is no airport here!! Pick another city!")}
+			else{
+				if (allInfo[orig].length == 0) {console.log("OOOPS!!! There is no flight depart from this city!! Pick another city!")}
+				else {
+					allInfo[orig].forEach(function(d) {
+						// console.log(city_location[orig])
+						if (city_location[d.DESTINATION_CITY.toLowerCase()]){
+							// console.log(d.DESTINATION_CITY.toLowerCase(), city_location[d.DESTINATION_CITY.toLowerCase()])
+							var start = city_location[orig];
+							var end = city_location[d.DESTINATION_CITY.toLowerCase()];
+							// console.log(end)
+							showDest(start, end);
+							showPlane(start, end);
+						}
+					})
 				}
-
-			})
+			}
 		}
-	}
+
 
 	</script>
 
