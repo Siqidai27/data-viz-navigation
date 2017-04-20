@@ -91,9 +91,10 @@
 		var citiesData, citiesLocation = [];
 		var startPoint, destinationPoint;
 		var pinImg, arrowImg;
-		var airports, flights;
+		var airports, flights, airlines;
 		var city_airport = {};
 		var IATA_city = {};
+		var airlines_lookup = {};
 		var allInfo = {};
 
 		function parseCities (line) {
@@ -113,6 +114,12 @@
 			line.ORIGIN_CITY = IATA_city[line.ORIGIN_AIRPORT];
 			line.DESTINATION_CITY = IATA_city[line.DESTINATION_AIRPORT];
 			line.FLIGHT_ID = line.AIRLINE + line.FLIGHT_NUMBER;
+			line.AIRLINE_NAME = airlines_lookup[line.AIRLINE];
+			return line;
+		}
+
+		function parseAirlines(line){
+			airlines_lookup[line.IATA_CODE] = line.AIRLINE
 			return line;
 		}
 
@@ -120,13 +127,17 @@
 			.defer(d3.json,"data/usroads.json")
 			.defer(d3.csv, "data/uscities.csv", parseCities)
 			.defer(d3.csv, "data/airports.csv", parseAirports)
+			.defer(d3.csv, "data/airlines.csv", parseAirlines)
 			.defer(d3.csv, "data/flights1.csv", parseFlights)
-			.await(function(error, rawRoads, rawCities, rawAirports, rawFlights){
+
+			.await(function(error, rawRoads, rawCities, rawAirports, rawAirlines, rawFlights){
 				if (error) throw error;
 				usroads = rawRoads;
 				citiesData = rawCities;
 				airports = rawAirports;
+				airlines = rawAirlines;
 				flights = rawFlights;
+
 
 				airports.forEach(function (d){
 
