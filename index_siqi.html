@@ -74,7 +74,7 @@
 		</div>
 
 	<script>
-		var width = 960,height = 600;
+		var width = 1200, height = 800, padding = 20;
 		var svg = d3.select("#plot").append("svg")
 		    .attr("width", width).attr("height", height);
 
@@ -305,8 +305,6 @@
 			.style("fill","red");
 		}
 
-
-
 		function showFlight(){
 
 			var popup_height = 240;
@@ -352,7 +350,7 @@
 			function transition(plane, route) {
 				var l = route.node().getTotalLength();
 				plane.transition()
-					.duration(10000)
+					.duration(5000)
 					.attrTween("transform", delta(route.node()));
 			}
 
@@ -387,9 +385,15 @@
 
 		function flightFrom(orig) {
 			allInfo[orig].forEach(function(d) {
-				console.log(d.DESTINATION_CITY.toLowerCase())
-				// console.log(d)
-				// showFlightRoute()
+				// console.log(city_location[orig])
+				if (city_location[d.DESTINATION_CITY.toLowerCase()]){
+					// console.log(d.DESTINATION_CITY.toLowerCase(), city_location[d.DESTINATION_CITY.toLowerCase()])
+					var start = city_location[orig];
+					var end = city_location[d.DESTINATION_CITY.toLowerCase()];
+					// console.log(end)
+					showFlightRoute(start, end)
+				}
+
 			})
 		}
 
