@@ -28,33 +28,33 @@
 		.ferry-route { stroke: #4393c3; stroke-width: 1.5px; }
 
 		.d3-tip {
-      line-height: 1;
-      padding: 6px;
-      background: rgba(0, 0, 0, 0.8);
-      color: #fff;
-      border-radius: 4px;
-      font-size: 12px;
-    }
+	      line-height: 1;
+	      padding: 6px;
+	      background: rgba(0, 0, 0, 0.8);
+	      color: #fff;
+	      border-radius: 4px;
+	      font-size: 12px;
+	    }
 
-    /* Creates a small triangle extender for the tooltip */
-    .d3-tip:after {
-      box-sizing: border-box;
-      display: inline;
-      font-size: 10px;
-      width: 100%;
-      line-height: 1;
-      color: rgba(0, 0, 0, 0.8);
-      content: "\25BC";
-      position: absolute;
-      text-align: center;
-    }
+	    /* Creates a small triangle extender for the tooltip */
+	    .d3-tip:after {
+	      box-sizing: border-box;
+	      display: inline;
+	      font-size: 10px;
+	      width: 100%;
+	      line-height: 1;
+	      color: rgba(0, 0, 0, 0.8);
+	      content: "\25BC";
+	      position: absolute;
+	      text-align: center;
+	    }
 
-    /* Style northward tooltips specifically */
-    .d3-tip.n:after {
-      margin: -2px 0 0 0;
-      top: 100%;
-      left: 0;
-    }
+	    /* Style northward tooltips specifically */
+	    .d3-tip.n:after {
+	      margin: -2px 0 0 0;
+	      top: 100%;
+	      left: 0;
+	    }
 	</style>
 
 	<body>
@@ -129,7 +129,6 @@
 			.defer(d3.csv, "data/airports.csv", parseAirports)
 			.defer(d3.csv, "data/airlines.csv", parseAirlines)
 			.defer(d3.csv, "data/flights1.csv", parseFlights)
-
 			.await(function(error, rawRoads, rawCities, rawAirports, rawAirlines, rawFlights){
 				if (error) throw error;
 				usroads = rawRoads;
@@ -138,17 +137,14 @@
 				airlines = rawAirlines;
 				flights = rawFlights;
 
-
 				airports.forEach(function (d){
-
-					city_airport[d.CITY.toLowerCase()].push(d.AIRPORT);
+					city_airport[d.CITY.toLowerCase()].push('<br>'+d.AIRPORT);
 				});
-
 
 				flights.forEach(function(d){
 					allInfo[d.ORIGIN_CITY.toLowerCase()].push(d);
 				})
-				console.log(allInfo);
+				// console.log(allInfo);
 
 				showMap()
 				showCities()
@@ -187,7 +183,10 @@
 			var tool_tip = d3.tip()
 		    .attr("class", "d3-tip")
 		    .offset([-8, 0])
-		    .html(function(d,i) { return "City: " + citiesData[i].city + "<br>" + "Airports: " ;});
+		    .html(function(d,i) {
+				if (city_airport[d.city]){var numAirport = city_airport[d.city]}
+				else {var numAirport = "<br>Sorry, there is no airport in this city."}
+				return "City: " + citiesData[i].city + "<br><br>Airport(s):<br>" + numAirport; });
 
 			svg.call(tool_tip);
 
@@ -197,8 +196,14 @@
 			.attr("cy", function (d) { return projection(d.location)[1]; })
 			.attr("r", 2)
 			.style("fill","#429EFF")
-			.on('mouseover', tool_tip.show)
-      		.on('mouseout', tool_tip.hide);
+			.on("mouseover", tool_tip.show)
+      		.on("mouseout", tool_tip.hide);
+
+			// circles.on("click", function(){
+			// 	console.log("sss")
+			// 	var start =
+			// 	flightFrom(start);
+			// })
 
 			// console.log("showCircles");
 			startPoint = g.append("circle")
@@ -230,7 +235,7 @@
 		// init();
 		d3.select("#search").on("click", focusCities);
 		d3.select("#driveButton").on("click", showDrive);
-		d3.select("#flightButton").on("click", showFight);
+		d3.select("#flightButton").on("click", showFlight);
 
 		var string_start;
 		var string_destination;
@@ -294,11 +299,7 @@
 			.style("fill","red");
 		}
 
-		function showFight(){
-
-
-			// var temp_height = 120;
-			// var temp_width = 80;
+		function showFlight(){
 			var popup = svg.append("g");
 			popup.append("rect")
 			.attr("id","tempbg")
@@ -315,12 +316,16 @@
 
 			console.log("showRect!!");
 
+			showFlightRoute(startP, destP);
+		}
+
+		function showFlightRoute(orig, dest) {
 			var plane = g.append("path")
             	.attr("class", "plane")
                 .attr("d", "m25.21488,3.93375c-0.44355,0 -0.84275,0.18332 -1.17933,0.51592c-0.33397,0.33267 -0.61055,0.80884 -0.84275,1.40377c-0.45922,1.18911 -0.74362,2.85964 -0.89755,4.86085c-0.15655,1.99729 -0.18263,4.32223 -0.11741,6.81118c-5.51835,2.26427 -16.7116,6.93857 -17.60916,7.98223c-1.19759,1.38937 -0.81143,2.98095 -0.32874,4.03902l18.39971,-3.74549c0.38616,4.88048 0.94192,9.7138 1.42461,13.50099c-1.80032,0.52703 -5.1609,1.56679 -5.85232,2.21255c-0.95496,0.88711 -0.95496,3.75718 -0.95496,3.75718l7.53,-0.61316c0.17743,1.23545 0.28701,1.95767 0.28701,1.95767l0.01304,0.06557l0.06002,0l0.13829,0l0.0574,0l0.01043,-0.06557c0,0 0.11218,-0.72222 0.28961,-1.95767l7.53164,0.61316c0,0 0,-2.87006 -0.95496,-3.75718c-0.69044,-0.64577 -4.05363,-1.68813 -5.85133,-2.21516c0.48009,-3.77545 1.03061,-8.58921 1.42198,-13.45404l18.18207,3.70115c0.48009,-1.05806 0.86881,-2.64965 -0.32617,-4.03902c-0.88969,-1.03062 -11.81147,-5.60054 -17.39409,-7.89352c0.06524,-2.52287 0.04175,-4.88024 -0.1148,-6.89989l0,-0.00476c-0.15655,-1.99844 -0.44094,-3.6683 -0.90277,-4.8561c-0.22699,-0.59493 -0.50356,-1.07111 -0.83754,-1.40377c-0.33658,-0.3326 -0.73578,-0.51592 -1.18194,-0.51592l0,0l-0.00001,0l0,0z");
 
 			var route = g.append("path")
-	            .datum({type: "LineString", coordinates: [startP, destP]})
+	            .datum({type: "LineString", coordinates: [orig, dest]})
 	          	.attr("class", "route")
 	           	.attr("d", path)
 				.style("fill", "none");
@@ -351,8 +356,24 @@
 			}
 
 			transition(plane, route);
-
 		}
+
+		function findFlight(orig, dest) {
+			allInfo[orig].forEach(function(d){
+				if (d.DESTINATION_CITY.toLowerCase() == dest) {
+					// console.log(d)
+				}
+			})
+		}
+
+		function flightFrom(orig) {
+			allInfo[orig].forEach(function(d) {
+				console.log(d.DESTINATION_CITY.toLowerCase())
+				// console.log(citiesLocation)
+				showFlightRoute()
+			})
+		}
+
 	</script>
 
 	<script>
