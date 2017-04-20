@@ -185,10 +185,11 @@
 			});
 
 			var tool_tip = d3.tip()
-      .attr("class", "d3-tip")
-      .offset([-8, 0])
-      .html(function(d,i) { return "City: " + citiesData[i].city; });
-    	svg.call(tool_tip);
+		    .attr("class", "d3-tip")
+		    .offset([-8, 0])
+		    .html(function(d,i) { return "City: " + citiesData[i].city + "<br>" + "Airports: " ;});
+
+			svg.call(tool_tip);
 
 			var circles = g.selectAll("circle").data(citiesLocation).enter()
 			.append("circle")
@@ -197,7 +198,7 @@
 			.attr("r", 2)
 			.style("fill","#429EFF")
 			.on('mouseover', tool_tip.show)
-      .on('mouseout', tool_tip.hide);
+      		.on('mouseout', tool_tip.hide);
 
 			// console.log("showCircles");
 			startPoint = g.append("circle")
