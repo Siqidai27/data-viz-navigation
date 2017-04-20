@@ -147,13 +147,13 @@
 				})
 				// console.log(allInfo);
 
-				showMap()
-				showCities()
+				showMap();
+				showCities();
 			});
 
 
 
-		function showMap(){
+		function showMap() {
 			var usa = g.selectAll("path")
 			  	.data(topojson.feature(usroads, usroads.objects.usa).features)
 				.enter().append("path")
@@ -176,12 +176,12 @@
 	  //   return "<strong>City:</strong> <span style='color:red'>" + d.city + "</span>";
 	  // });
 
-		function showCities(){
+		function showCities() {
 			citiesData.forEach(function(d) {
 				citiesLocation.push({"city": d.city.toLowerCase(), "location": [d.lng,d.lat], "province": d.province});
 			});
 
-			citiesLocation.forEach(function(d){
+			citiesLocation.forEach(function(d) {
 				city_location[d.city] = d.location;
 			});
 
