@@ -54,7 +54,7 @@
 		function dragged(d) { d3.select(this).attr("cx", d.x = d3.event.x).attr("cy", d.y = d3.event.y); }
 		var g = svg.append("g");
 
-		var rawData
+		// var rawData
 		var usroads
 		var citiesData, citiesLocation = [];
 		var startPoint, destinationPoint;
@@ -71,7 +71,7 @@
 			.defer(d3.json,"data/usroads.json")
 			.defer(d3.csv, "data/uscities.csv", parseCities)
 			.defer(d3.csv, "data/airports.csv")
-			.defer(d3.csv, "data/flights.csv")
+			.defer(d3.csv, "data/flights1.csv")
 			.await(function(error, rawRoads, rawCities, rawAirports, rawFlights){
 				if (error) throw error;
 				usroads = rawRoads;
@@ -81,6 +81,7 @@
 				showMap()
 				showCities()
 			});
+
 
 		function showMap(){
 			var usa = g.selectAll("path")
