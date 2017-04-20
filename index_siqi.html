@@ -93,6 +93,8 @@
 		var pinImg, arrowImg;
 		var airports, flights;
 		var city_airport = {};
+		var IATA_city = {};
+		var allInfo = {};
 
 		function parseCities (line) {
 			line.lng = Number(line.lng);
@@ -101,7 +103,16 @@
 		}
 
 		function parseAirports(line){
-			city_airport[line.CITY.toLowerCase()] = []
+			city_airport[line.CITY.toLowerCase()] = [];
+			IATA_city[line.IATA_CODE] = line.CITY;
+			allInfo[line.CITY.toLowerCase()] = [];
+			return line;
+		}
+
+		function parseFlights(line){
+			line.ORIGIN_CITY = IATA_city[line.ORIGIN_AIRPORT];
+			line.DESTINATION_CITY = IATA_city[line.DESTINATION_AIRPORT];
+			line.FLIGHT_ID = line.AIRLINE + line.FLIGHT_NUMBER;
 			return line;
 		}
 
@@ -109,7 +120,7 @@
 			.defer(d3.json,"data/usroads.json")
 			.defer(d3.csv, "data/uscities.csv", parseCities)
 			.defer(d3.csv, "data/airports.csv", parseAirports)
-			.defer(d3.csv, "data/flights1.csv")
+			.defer(d3.csv, "data/flights1.csv", parseFlights)
 			.await(function(error, rawRoads, rawCities, rawAirports, rawFlights){
 				if (error) throw error;
 				usroads = rawRoads;
@@ -121,8 +132,12 @@
 
 					city_airport[d.CITY.toLowerCase()].push(d.AIRPORT);
 				});
-				console.log(city_airport);
 
+
+				flights.forEach(function(d){
+					allInfo[d.ORIGIN_CITY.toLowerCase()].push(d);
+				})
+				console.log(allInfo);
 
 				showMap()
 				showCities()
