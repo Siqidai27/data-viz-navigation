@@ -199,11 +199,12 @@
 			.on("mouseover", tool_tip.show)
       		.on("mouseout", tool_tip.hide);
 
-			// circles.on("click", function(){
-			// 	console.log("sss")
-			// 	var start =
-			// 	flightFrom(start);
-			// })
+			circles.on("click", function(d){
+
+				// console.log(d.city)
+				// var start =
+				flightFrom(d.city);
+			})
 
 			// console.log("showCircles");
 			startPoint = g.append("circle")
@@ -369,8 +370,8 @@
 		function flightFrom(orig) {
 			allInfo[orig].forEach(function(d) {
 				console.log(d.DESTINATION_CITY.toLowerCase())
-				// console.log(citiesLocation)
-				showFlightRoute()
+				// console.log(d)
+				// showFlightRoute()
 			})
 		}
 
