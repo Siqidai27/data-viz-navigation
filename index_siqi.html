@@ -70,13 +70,45 @@
 			<button id="flightButton">Flight</button>
 		</div>
 		<div id="plot">
-			<circle id="startPoint" />
+		</div>
+		<div id="plot2">
 		</div>
 
 	<script>
 		var width = 960,height = 600;
 		var svg = d3.select("#plot").append("svg")
 		    .attr("width", width).attr("height", height);
+	  var svg2 = d3.select("#plot2").append("svg")
+		    .attr("width", width).attr("height", height);
+				var columns = ["Id", "Book  Title", "Author"];
+				var books = [
+		    ["1", "The Caves of Steel", "Isaac Asimov"],
+		    ["2", "The Robots of Dawn", "Isaac Asimov"],
+		    ["3", "Brave New World", "Aldous Huxley"],
+		    ["4", "1984", "George Orwell"],
+				];
+
+				var table = d3.select("body").append("table").attr("id", "bookTable");
+				var thead = table.append("thead");
+				var tbody = table.append("tbody");
+
+				thead.append("tr")
+				  .selectAll("th")
+				  .data(columns)
+				  .enter()
+				  .append("th")
+				  .text(function ( d ) { return d; })
+
+				var rows = tbody.selectAll("tr")
+				    .data(books)
+				    .enter()
+				    .append("tr").attr("data-id", function( d ){  return d[0]; });
+
+				var cells = rows.selectAll("td")
+				    .data(function ( d ) { return d; })
+				    .enter()
+				    .append("td")
+				    .text(function( d ) { return d; });
 
 		var projection = d3.geoAlbersUsa().scale(1100).translate([width / 2, height / 2]);
 		var path = d3.geoPath().projection(projection);
@@ -149,6 +181,8 @@
 
 				showMap()
 				showCities()
+
+
 			});
 
 
@@ -167,6 +201,16 @@
 				.enter().append("path")
 	      		.attr("d", path)
 			  	.attr("class",function(d) { return "roads " + d.properties.type.toLowerCase().split(' ').join('-'); });
+
+					var columns = ["Id", "Book  Title", "Author"];
+					var books = [
+			    ["1", "The Caves of Steel", "Isaac Asimov"],
+			    ["2", "The Robots of Dawn", "Isaac Asimov"],
+			    ["3", "Brave New World", "Aldous Huxley"],
+			    ["4", "1984", "George Orwell"],
+					];
+
+
 		}
 
 		// var tip = d3.tip()
@@ -234,6 +278,8 @@
 			.attr('height', '20')
 		  	.attr('width', '20')
 			.attr('opacity','0');
+
+
 		}
 	</script>
 
@@ -306,17 +352,18 @@
 		}
 
 
+		var popup = svg.append("g").attr("id","popup");
 
 		function showFlight(){
 
-			var popup_height = 240;
-			var popup_width = 360;
-			var popup = svg.append("g").attr("id","popup");
+			var popup_height = 300;
+			var popup_width = 480;
+
 
 			popup.append("rect")
 			.attr("id","tempbg")
-			.attr("x",width/2)
-			.attr("y",height/2)
+			.attr("x",width/5)
+			.attr("y",height/5)
 			.attr("height",popup_height)
 			.attr("width",popup_width)
 			.attr("rx",10)
@@ -327,15 +374,21 @@
 			.style("opacity",0.7);
 
 			popup.append('svg:image').attr('xlink:href','images/close.png')
-			.attr('x',-1)
-			.attr('y',-1)
-			.attr('height', '20')
-		  	.attr('width', '20')
-			.attr('opacity','0');
+			.attr('x',width/5+popup_width-30)
+			.attr('y',height/5)
+			.attr('height', '30')
+		  .attr('width', '30')
+			.on("click", popupRemove);
+
+			findFlight(string_start,string_destination);
 
 			console.log("showRect!!");
 
 			showFlightRoute(startP, destP);
+		}
+
+		function popupRemove(){
+			d3.select("#popup").remove();
 		}
 
 		function showFlightRoute(orig, dest) {
@@ -347,7 +400,7 @@
 	            .datum({type: "LineString", coordinates: [orig, dest]})
 	          	.attr("class", "route")
 	           	.attr("d", path)
-				.style("fill", "none");
+							.style("fill", "none");
 
 			function transition(plane, route) {
 				var l = route.node().getTotalLength();
@@ -378,11 +431,22 @@
 		}
 
 		function findFlight(orig, dest) {
-			allInfo[orig].forEach(function(d){
-				if (d.DESTINATION_CITY.toLowerCase() == dest) {
-					// console.log(d)
-				}
-			})
+			// var columns = ["FLIGHT", "DEPARTURE","ARIVAL","DISTANCE"];
+			// var books = [];
+			// var count=0;
+			// allInfo[orig].forEach(function(d){
+			// 	if (d.DESTINATION_CITY.toLowerCase() == dest) {
+			// 		count++;
+			// 		books.push([d.FLIGHT_ID,d.SCHEDULED_DEPARTURE,d.SCHEDULED_ARRIVAL,d.DISTANCE]);
+			// 	}
+			// })
+			// console.log(books);
+			// if(count == 0){
+			// 	console.log("No flight from "+orig+" to "+dest+" today!");
+			// }
+
+
+
 		}
 
 		function flightFrom(orig) {
