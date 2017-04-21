@@ -409,7 +409,8 @@
 			    .data(function (d) { return d; })
 			    .enter()
 			    .append("td")
-				.text(function (d) { return d; });
+				.text(function (d) { return d; })
+				.style("text-align", "center");
 		}
 
 		function flightFrom(orig) {
