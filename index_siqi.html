@@ -58,6 +58,7 @@
 	    }
 
 		.plane {stroke: white; stroke-width: 1px; fill: red}
+		.route {fill: none;}
 	</style>
 
 	<body>
@@ -338,8 +339,7 @@
 			var route = g.append("path")
 	            .datum({type: "LineString", coordinates: [orig, dest]})
 	          	.attr("class", "route")
-	           	.attr("d", path)
-				.style("fill", "none");
+	           	.attr("d", path);
 
 			function transition(plane, route) {
 				var l = route.node().getTotalLength();
