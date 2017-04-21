@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Bootstrap Example</title>
+  <title>Find Flight Using d3</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -66,15 +66,15 @@
 
 		.bottomleft {
 	    position: absolute;
-	    bottom: 8px;
-	    left: 16px;
+	    bottom: 40px;
+	    /*left: 16px;*/
 	    font-size: 18px;
 		}
 
 		.img {
 	    width: 100%;
 	    height: auto;
-	    opacity: 0.3;
+	    opacity: 0.9;
 		}
 </style>
 
@@ -82,7 +82,7 @@
 <body>
 
 	<div class="container">
-	  <img src="images/bg.jpg" alt="Norway" >
+	  <img class="img" src="images/bg3.jpg" >
 	  <div class="bottomleft">Flight information in the U.S.</div>
 		<!-- <p>Find the cities you wanna go</p> -->
 	</div>
@@ -108,7 +108,7 @@
 			</div>
     </div>
     <div class="col-sm-4">
-      <h3>Column 2</h3>
+      <h3>Daily Flights</h3>
       <div id="plot2">
 			</div>
     </div>
@@ -414,7 +414,7 @@
 	}
 
 	function findFlight(orig, dest) {
-		var columns = ["ORIGIN", "DESTINATION", "FLIGHT", "DEPARTURE","ARIVAL","DISTANCE"];
+		var columns = ["ORIG", "DEST", "FLIGHT", "DEPARTURE","ARIVAL","DISTANCE"];
 		var books = [];
 		var count=0;
 		allInfo[orig].forEach(function(d){
