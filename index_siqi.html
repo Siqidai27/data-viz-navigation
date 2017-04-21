@@ -11,7 +11,7 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script> -->
 		<!-- <script src="fisheye.js"></script> -->
 		<script src="scripts/d3-tip.js"></script>
-		<script src="scripts/dij.js"></script>
+		<!-- <script src="scripts/dij.js"></script> -->
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/default.min.css">
 		<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
 	</head>
@@ -392,7 +392,7 @@
 			if(count == 0){
 				console.log("No flight from "+orig+" to "+dest+" today!");
 			}
-			
+
 			var table = d3.select("body").append("table").attr("id", "bookTable");
 			var thead = table.append("thead");
 			var tbody = table.append("tbody");
