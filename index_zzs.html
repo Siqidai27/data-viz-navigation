@@ -59,15 +59,40 @@
 			top: 100%;
 			left: 0;
 		}
+
+		.container {
+    	position: relative;
+		}
+
+		.bottomleft {
+	    position: absolute;
+	    bottom: 8px;
+	    left: 16px;
+	    font-size: 18px;
+		}
+
+		.img {
+	    width: 100%;
+	    height: auto;
+	    opacity: 0.3;
+		}
 </style>
+
 
 <body>
 
-<div class="jumbotron text-center">
-  <h1>My First Bootstrap Page</h1>
-	<img  src="images/bg.jpg">
-  <p>This is some text.</p>
-</div>
+	<div class="container">
+	  <img src="images/bg.jpg" alt="Norway" >
+	  <div class="bottomleft">Flight information in the U.S.</div>
+		<!-- <p>Find the cities you wanna go</p> -->
+	</div>
+
+<!-- <div class="image">
+
+	<img  src="images/bg.jpg" alt="">
+	<h1>Flight information in the U.S.</h1>
+
+</div> -->
 
 
 <div class="container-fluid">
@@ -84,8 +109,8 @@
     </div>
     <div class="col-sm-4">
       <h3>Column 2</h3>
-      <p>Lorem ipsum dolor..</p>
-      <p>Ut enim ad..</p>
+      <div id="plot2">
+			</div>
     </div>
   </div>
 </div>
@@ -408,7 +433,7 @@
 			console.log("No flight from "+orig+" to "+dest+" today!");
 		}
 		d3.selectAll("table").remove();
-		var table = d3.select("body").append("table").attr("id", "bookTable");
+		var table = d3.select("#plot2").append("table").attr("id", "bookTable").attr("class","table table-striped");
 		var thead = table.append("thead");
 		var tbody = table.append("tbody");
 
