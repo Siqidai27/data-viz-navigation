@@ -392,7 +392,7 @@
 			if(count == 0){
 				console.log("No flight from "+orig+" to "+dest+" today!");
 			}
-
+			d3.selectAll("table").remove();
 			var table = d3.select("body").append("table").attr("id", "bookTable");
 			var thead = table.append("thead");
 			var tbody = table.append("tbody");
